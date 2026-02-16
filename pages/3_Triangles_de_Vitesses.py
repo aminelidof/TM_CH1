@@ -87,44 +87,129 @@ c5.metric("Coeff. de Débit φ", f"{phi:.2f}")
 
 st.write("---")
 
-# --- VISUALISATION DES TRIANGLES ---
-col_plot, col_text = st.columns([2, 1])
+import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --- CONFIGURATION ET STYLE ---
+st.markdown("""
+<style>
+    .calc-box {
+        background-color: #f0f2f6;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 5px solid #1f497d;
+        margin-bottom: 20px;
+    }
+    .result-val {
+        color: #e63946;
+        font-weight: bold;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# --- LAYOUT PRINCIPAL ---
+col_plot, col_text = st.columns([1.5, 1])
 
 with col_plot:
-    st.subheader("📐 Triangles des Vitesses (Stations 1 & 2)")
+    st.subheader("📐 Triangles des Vitesses")
+    
+    # 
+    
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6), facecolor='#f5f7f9')
 
-    def draw_triangle(ax, u, ca, cw, vw, title, color_c, color_v):
-        # Vecteur Entraînement U
+    def draw_triangle(ax, u, ca, cw, title, color_c, color_v, is_exit=False):
+        # Vecteur U (Base)
         ax.quiver(0, 0, u, 0, angles='xy', scale_units='xy', scale=1, color='black', label='U (Rotor)')
-        # Vecteur Absolu C
+        # Vecteur C (Absolu)
         ax.quiver(0, 0, cw, ca, angles='xy', scale_units='xy', scale=1, color=color_c, width=0.015, label='C (Absolu)')
-        # Vecteur Relatif V (Fermeture)
+        # Vecteur V (Relatif)
         ax.quiver(u, 0, cw-u, ca, angles='xy', scale_units='xy', scale=1, color=color_v, width=0.01, label='V (Relatif)')
         
         ax.set_title(title, fontsize=12, fontweight='bold')
-        ax.set_xlim(-50, max(u, cw) + 100)
-        ax.set_ylim(-20, ca + 100)
+        ax.set_xlim(-50, max(u, cw) + 150)
+        ax.set_ylim(-20, ca + 150)
         ax.set_aspect('equal')
-        ax.grid(True, linestyle='--', alpha=0.5)
-        ax.legend(loc='lower right', fontsize='small')
+        ax.grid(True, linestyle='--', alpha=0.3)
+        ax.legend(loc='upper right', fontsize='small')
 
-    draw_triangle(ax1, U, Ca, Cw1, Vw1, f"Entrée Rotor\n(β1 = {beta1:.1f}°)", "#1f77b4", "#ff7f0e")
-    draw_triangle(ax2, U, Ca, Cw2, -Vw2, f"Sortie Rotor\n(α2 = {alpha2:.1f}°)", "#2ca02c", "#d62728")
+    draw_triangle(ax1, U, Ca, Cw1, "Entrée (Station 1)", "#1f77b4", "#ff7f0e")
+    draw_triangle(ax2, U, Ca, Cw2, "Sortie (Station 2)", "#2ca02c", "#d62728")
     
     st.pyplot(fig)
 
+    st.info("""
+    **Interprétation Physique :** Le rotor dévie l'écoulement en augmentant la composante tangentielle ($C_{w1} \rightarrow C_{w2}$). 
+    C'est ce 'redressement' du fluide qui traduit le transfert de couple mécanique en énergie fluide.
+    """)
+
 with col_text:
-    st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.markdown("### 🔍 Analyse Cinématique")
-    st.write(f"**Vitesse son locale (a1) :** {np.sqrt(gamma*R*T01):.1f} m/s")
-    st.write(f"**Mach relatif entrée (M_w1) :** {V1/np.sqrt(gamma*R*T01):.2f}")
-    st.write(f"**Mach absolu sortie (M_c2) :** {C2/np.sqrt(gamma*R*T02):.2f}")
-    st.markdown("---")
-    st.write("**Déviation du flux :**")
-    st.latex(rf"\Delta \beta = {abs(beta1-beta2):.1f}^\circ")
-    st.latex(rf"\Delta C_w = {Cw2-Cw1:.1f} \, m/s")
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.subheader("🏁 Analyse Étape par Étape")
+    
+    with st.container():
+        st.markdown('<div class="calc-box">', unsafe_allow_html=True)
+        
+        # --- ÉTAPE 1 : EULER AVEC DÉTAIL DES COMPOSANTES ---
+        st.markdown("#### 1. Transfert de Travail ($W$)")
+
+        with st.expander("🔍 D'où viennent les valeurs 175.9 et 34.0 ?", expanded=False):
+            st.write("Ces valeurs sont les projections tangentielles des vitesses absolues :")
+            st.latex(rf"C_{{w1}} = C_a \cdot \tan(\alpha_1) = {Cw1:.1f} \, m/s")
+            st.latex(rf"C_{{w2}} = U - (C_a \cdot \tan(\beta_2)) = {Cw2:.1f} \, m/s")
+
+        st.write("Calcul du travail spécifique par l'équation d'Euler :")
+        st.latex(r"W = U \cdot (C_{w2} - C_{w1})")
+
+        # Ligne de remplacement avec vos chiffres
+        st.latex(rf"W = {U:.1f} \cdot ({Cw2:.1f} - {Cw1:.1f})")
+
+        # Résultat final
+        work = U * (Cw2 - Cw1)
+        st.latex(rf"W = {work:.1f} \, J/kg")        
+        # --- ÉTAPE 2 : THERMO ---
+        st.markdown("#### 2. Saut de Température ($\Delta T_0$)")
+        st.write("D'après le 1er principe en système ouvert ($q=0$) :")
+        delta_T0 = work / 1004.5
+        st.latex(rf"\Delta T_0 = \frac{{W}}{{c_p}} = {delta_T0:.2f} \, K")
+        
+# --- ÉTAPE 3 : PRESSION ---
+        st.markdown("#### 3. Taux de Pression ($\pi$)")
+        st.write("Le taux de pression isentropique lie l'augmentation de température à l'augmentation de pression :")
+        
+        # Calculs
+        pi_is = ( (T01 + delta_T0) / T01 )**(gamma/(gamma-1))
+        puissance_gamma = gamma/(gamma-1) # vaut 3.5 pour l'air
+        
+        # Affichage avec remplacement des chiffres
+        st.latex(rf"\pi_{{is}} = \left( \frac{{T_{{01}} + \Delta T_0}}{{T_{{01}}}} \right)^{{\frac{{\gamma}}{{\gamma-1}}}}")
+        st.latex(rf"\pi_{{is}} = \left( \frac{{{T01:.1f} + {delta_T0:.2f}}}{{{T01:.1f}}} \right)^{{{puissance_gamma:.1f}}}")
+        st.latex(rf"\pi_{{is}} = {pi_is:.3f}")
+        
+        st.info(f"💡 Ce résultat signifie que l'étage augmente la pression de **{(pi_is-1)*100:.1f} %** par rapport à l'entrée.")
+
+        # --- ÉTAPE 4 : MACH & DIAGNOSTIC ---
+        st.markdown("#### 4. Diagnostic de l'Écoulement")
+        
+        # Calcul vitesse du son
+        a1 = np.sqrt(gamma * R * T01)
+        # Calcul Mach relatif
+        M_v1 = V1 / a1
+        
+        st.write("**Vitesse du son à l'entrée ($a_1$) :**")
+        st.latex(rf"a_1 = \sqrt{{\gamma \cdot R \cdot T_{{01}}}} = \sqrt{{1.4 \cdot 287 \cdot {T01:.1f}}} = {a1:.1f} \, m/s")
+        
+        st.write("**Nombre de Mach relatif ($M_{v1}$) :**")
+        st.latex(rf"M_{{v1}} = \frac{{V_1}}{{a_1}} = \frac{{{V1:.1f}}}{{{a1:.1f}}} = {M_v1:.2f}")
+
+        # Verdict de l'ingénieur
+        if M_v1 > 0.9:
+            st.error(f"🚨 **Verdict :** M = {M_v1:.2f} (Régime Transsonique). Apparition d'ondes de choc sur l'extrados de l'aube, ce qui va chuter le rendement.")
+        elif M_v1 > 0.7:
+            st.warning(f"⚠️ **Verdict :** M = {M_v1:.2f} (Régime Subsonique élevé). Risque de blocage si le débit augmente.")
+        else:
+            st.success(f"✅ **Verdict :** M = {M_v1:.2f} (Régime Subsonique). Écoulement sain et pertes minimales.")
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # --- DIAGNOSTIC INDUSTRIEL ET STABILITÉ ---
 st.header("🔬 Diagnostic de Stabilité et de Charge")
