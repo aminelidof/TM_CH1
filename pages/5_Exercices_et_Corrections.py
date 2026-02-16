@@ -199,4 +199,5 @@ with col_interactive:
     if rapport_p > 1.5:
         st.warning("⚠️ Ce rapport de pression est élevé pour un seul étage axial (risque de décrochage).")
     else:
+
         st.success("✅ Dimensionnement dans les standards industriels (1.2 - 1.5).")
