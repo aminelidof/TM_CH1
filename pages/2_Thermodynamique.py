@@ -24,6 +24,24 @@ with col1:
     st.write("**Équation d'Euler (Forme Cinématique) :**")
     st.write(r"Comme les rayons d'entrée et de sortie sont sensiblement identiques ($U_1 \approx U_2 = U$) :")
     st.latex(r"W = U(C_{w2} - C_{w1}) = U \cdot \Delta C_w")
+
+# --- SECTION DÉFINITIONS (À insérer où vous le souhaitez) ---
+with st.expander("🔍 Glossaire et Définition des Termes Technique", expanded=False):
+    st.markdown("""
+    Cette section définit les variables clés utilisées dans l'équation d'Euler et l'analyse énergétique :
+    """)
+    
+    col_def1, col_def2 = st.columns(2)
+    
+    with col_def1:
+        st.markdown(f"**$W$ (en $J/kg$) :** Le **travail spécifique** (ou massique). C'est l'énergie transférée au fluide par kilogramme de matière circulante.")
+        st.markdown(f"**$U$ (en $m/s$) :** La **vitesse d'entraînement** (vitesse tangentielle des pales). Définie par $U = \omega \cdot r$.")
+        st.markdown(f"**$C_w$ (en $m/s$) :** La **composante tangentielle** de la vitesse absolue du fluide (vitesse de 'tourbillon' ou *whirl velocity*).")
+
+    with col_def2:
+        st.markdown("**$C_{w1}$ :** Vitesse tangentielle à l'entrée du rotor.")
+        st.markdown("**$C_{w2}$ :** Vitesse tangentielle à la sortie du rotor.")
+        st.markdown("**$\Delta C_w$ :** La variation de la quantité de mouvement tangentielle ($C_{w2} - C_{w1}$).")
     
     st.info("💡 **Physique du transfert** : Le rotor augmente la vitesse absolue du fluide, ce qui accroît son énergie cinétique, ensuite convertie en pression dans le stator.")
 
@@ -37,26 +55,38 @@ st.write("---")
 
 # --- SECTION B : PARAMÈTRES ADIMENSIONNELS (COEFFICIENTS) ---
 st.header("B. Critères de Performance et Coefficients de Design")
-st.write("Ces coefficients permettent de comparer des machines de tailles différentes.")
+st.write("Ces coefficients permettent de comparer des machines de tailles différentes et de caractériser leur performance.")
 
 c1, c2, c3 = st.columns(3)
 
 with c1:
     st.markdown("#### 1. Coefficient de Charge ($\psi$)")
-    st.write("Aussi appelé coefficient de température. Il mesure le travail spécifique par unité d'énergie cinétique du rotor.")
+    st.write("**Aussi appelé coefficient de température.**")
     st.latex(r"\psi = \frac{\Delta h_0}{U^2} = \frac{c_p \Delta T_0}{U^2}")
+    st.info("""
+    **Détail :** Mesure la capacité de la machine à transférer de l'énergie, représentée par l'enthalpie totale $\Delta h_0$ 
+    ou le saut de température $\Delta T_0$ par rapport à la vitesse périphérique au carré $U^2$.
+    """)
     st.caption("Standard industriel : 0.3 < ψ < 0.5")
 
 with c2:
     st.markdown("#### 2. Coefficient de Débit ($\phi$)")
-    st.write("Rapport entre la vitesse axiale (flux) et la vitesse d'entraînement.")
+    st.write("**Rapport des vitesses.**")
     st.latex(r"\phi = \frac{C_a}{U}")
+    st.info("""
+    **Détail :** Rapport entre la vitesse axiale du fluide ($C_a$) et la vitesse d'entraînement du rotor ($U$). 
+    Il définit la 'perméabilité' de l'étage.
+    """)
     st.caption("Standard industriel : 0.4 < φ < 0.8")
 
 with c3:
     st.markdown("#### 3. Facteur de Glissement ($\sigma_s$)")
-    st.write("Prend en compte l'inertie du fluide qui ne suit pas parfaitement l'angle de l'aube.")
+    st.write("**Effet de 'Slip'.**")
     st.latex(r"\sigma_s = 1 - \frac{2}{Z}")
+    st.info("""
+    **Détail :** Prend en compte l'inertie du fluide qui ne suit pas parfaitement l'angle de l'aube (phénomène de "slip"), 
+    $Z$ étant le nombre d'aubes.
+    """)
     st.write("D'après **Stantz**, le travail réel devient :")
     st.latex(r"W_{réel} = \sigma_s \cdot W_{idéal}")
 
@@ -72,9 +102,23 @@ with tab1:
     with col_a:
         st.write("**Définition :** Rapport entre le travail idéal (isentropique) et le travail réel fourni.")
         st.latex(r"\eta_{is} = \frac{h_{02s} - h_{01}}{h_{02} - h_{01}} = \frac{\pi_e^{\frac{\gamma-1}{\gamma}} - 1}{\frac{T_{02}}{T_{01}} - 1}")
+        
+        # Ajout des détails de la formule
+        st.info("""
+        **Détails des termes :**
+        * $h_{02s}$ : Enthalpie d'arrêt à la sortie si la compression était **parfaite** (isentropique).
+        * $h_{02}$ : Enthalpie d'arrêt **réelle** mesurée en sortie (inclut les pertes).
+        * $\pi_e$ : Taux de compression de l'étage ($P_{02}/P_{01}$).
+        * $\gamma$ : Indice adiabatique (1.4 pour l'air).
+        """)
+        
     with col_b:
-        st.write("**Diagramme h-s (Enthalpie-Entropie)**")
-        st.info("🔍 Visualisation : La compression réelle s'accompagne d'une augmentation d'entropie due aux frottements, décalant le point de sortie vers la droite.")
+        st.write("**Diagramme $h-s$ (Enthalpie-Entropie)**")
+        
+        st.info("""
+        **🔍 Analyse physique :** Dans un compresseur réel, l'irréversibilité (frottements) génère de la chaleur. 
+        Cela augmente l'entropie ($s_2 > s_1$) et nécessite donc un travail réel plus important que le travail idéal pour atteindre la même pression.
+        """)
 
 with tab2:
     st.write("**Pourquoi le rendement polytropique ($\eta_p$) ?**")
