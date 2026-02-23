@@ -7,6 +7,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
 # --- 2. THÈME DARK PERSONNALISÉ (CSS) ---
 st.markdown("""
     <style>
@@ -104,4 +105,5 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 pg.run()
+
 
