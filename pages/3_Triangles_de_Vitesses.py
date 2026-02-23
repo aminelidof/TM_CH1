@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # --- 1. CONFIGURATION ET DESIGN ---
-st.set_page_config(page_title="AxialFlow Pro | Master 1 GM", layout="wide")
+st.set_page_config(page_title="AxialFlow | Master 1 GM", layout="wide")
 
 st.markdown("""
     <style>
@@ -83,7 +83,7 @@ haller = V2 / V1
 df_lieblein = (1 - V2/V1) + (abs(Cw2 - Cw1) / (2 * 1.5 * V1))
 
 # --- 3. AFFICHAGE : DASHBOARD ---
-st.markdown('<p class="main-header">🌀 AxialFlow Pro : Analyse de l\'Étage</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-header">🌀 AxialFlow : Analyse de l\'Étage</p>', unsafe_allow_html=True)
 
 m1, m2, m3, m4, m5 = st.columns(5)
 m1.metric("Travail Euler", f"{W_euler/1000:.2f} kJ/kg")
@@ -187,4 +187,5 @@ with t3:
     """)
 
 st.divider()
-st.caption("🚀 Développé par Dr FODIL - M1 GM | AxialFlow Pro v2.0")
+st.caption("🚀 Développé par Dr FODIL - M1 GM | AxialFlow")
+
