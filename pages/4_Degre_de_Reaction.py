@@ -89,12 +89,25 @@ with tab2:
     st.success("### Configuration Symétrique (Standard Industriel)")
     st.write("""
     - **Principe** : L'augmentation de pression est répartie à 50/50 entre le rotor et le stator.
-    - **Avantages** : 
+    - **Lois fondamentales de l'étage ($R=0.5$)** :
     """)
     
-    # Utilisation de st.latex pour une mise en valeur maximale
+    # 1. Égalité des angles (Déjà présent)
     st.latex(r"\alpha_1 = \beta_2 \quad \text{et} \quad \beta_1 = \alpha_2")
     
+    # 2. Travail d'Euler et variation de vitesse tangentielle
+    st.write("**1. Transfert d'Énergie (Équation d'Euler) :**")
+    st.latex(r"W = U \cdot \Delta C_w \implies \Delta C_w = \frac{W}{U}")
+    
+    # 3. Lien entre vitesses tangentielles et vitesse d'entraînement
+    st.write("**2. Symétrie des Vitesses Tangentielles :**")
+    st.latex(r"w_{w1} + w_{w2} = U \quad \text{avec} \quad w_{w1} - w_{w2} = \Delta C_w")
+    
+    # 4. Calcul des angles des aubes
+    st.write("**3. Détermination des Angles des Aubes :**")
+    st.latex(r"\tan(\beta_1) = \frac{w_{w1}}{C_a} \quad ; \quad \tan(\beta_2) = \frac{w_{w2}}{C_a}")
+
+    st.write("---")
     st.write("""
     - **Performance** : Rendement maximal car les nombres de Mach sont minimisés dans les deux rangées.
     - **Fabrication** : Coûts réduits grâce à des profils d'aubes similaires.
@@ -137,4 +150,5 @@ ax.annotate('Optimum (Design)', xy=(0.5, 0.1), xytext=(0.6, 0.2),
 st.pyplot(fig)
 
 st.markdown("---")
+
 st.caption("Module Expert M1 GM - Analyse des Turbomachines Axiales - Dr FODIL")
