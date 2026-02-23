@@ -8,65 +8,90 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- 2. STYLE CSS AVANCÉ (DARK INDUSTRIAL) ---
+# --- 2. THÈME DARK HAUT CONTRASTE (CSS) ---
 st.markdown("""
     <style>
-    /* Import Police Moderne */
-    @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;700&display=swap');
-    
-    .stApp {
+    /* 1. Fond principal et Texte Global en BLANC */
+    [data-testid="stAppViewContainer"] {
         background-color: #0E1117;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #FFFFFF !important;
     }
 
-    /* Cartes de Navigation */
-    .nav-card {
-        background: #161B22;
-        border: 1px solid #30363D;
-        border-radius: 12px;
-        padding: 25px;
-        transition: all 0.3s ease;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .nav-card:hover {
-        border-color: #58A6FF;
-        transform: translateY(-5px);
-        background: #1C2128;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    /* Forcer le texte de tous les paragraphes et labels en blanc */
+    p, span, label, .stMarkdown {
+        color: #FFFFFF !important;
     }
 
-    /* Badge Header */
-    .main-title {
-        background: linear-gradient(90deg, #58A6FF, #2ea043);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 3rem;
-        font-weight: 800;
-        text-align: center;
+    /* 2. Titres en Bleu Électrique pour la visibilité */
+    h1, h2, h3, h4, h5, h6 {
+        color: #58A6FF !important;
+        font-weight: 700 !important;
     }
 
-    /* Footer Professionnel */
+    /* 3. Barre latérale (Sidebar) */
+    [data-testid="stSidebar"] {
+        background-color: #161B22 !important;
+        border-right: 1px solid #30363D;
+    }
+    
+    /* Texte de la sidebar en blanc */
+    [data-testid="stSidebar"] p, [data-testid="stSidebar"] span {
+        color: #FFFFFF !important;
+    }
+
+    /* 4. Cartes d'info (Info, Success, etc.) - Fond plus clair pour le contraste */
+    .stAlert {
+        background-color: #1F2937 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #58A6FF !important;
+    }
+
+    /* 5. Footer Stylisé */
     .footer {
         position: fixed;
-        bottom: 0;
         left: 0;
+        bottom: 0;
         width: 100%;
-        background: rgba(13, 17, 23, 0.95);
-        color: #8B949E;
+        background-color: #161B22;
+        color: #F0F6FC !important; /* Blanc cassé pour le footer */
         text-align: center;
-        padding: 12px;
-        font-size: 13px;
-        border-top: 1px solid #30363D;
-        z-index: 1000;
+        padding: 10px;
+        font-size: 12px;
+        border-top: 2px solid #58A6FF;
+        z-index: 100;
+    }
+
+    /* 6. Boutons de navigation */
+    [data-testid="stSidebarNavLink"] span {
+        color: #C9D1D9 !important;
+    }
+    [data-testid="stSidebarNavLink"][aria-current="page"] span {
+        color: #58A6FF !important;
+        font-weight: bold !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 3. DÉFINITION DES PAGES (LIÉES À VOTRE DOSSIER /pages) ---
-# Assurez-vous que les noms de fichiers correspondent exactement à ceux sur GitHub
-pages_dict = {
-    "📚 Cours Théorique": [
+# --- 3. IDENTIFICATION (SIDEBAR) ---
+with st.sidebar:
+    st.markdown("## 🎓 Identification")
+    st.markdown(f"""
+    <div style="background-color: #0D1117; padding: 15px; border-radius: 10px; border: 1px solid #58A6FF;">
+        <p style="margin:0; color:#58A6FF !important; font-weight:bold; font-size:16px;">Logiciel : AxialFlow</p>
+        <hr style="margin:10px 0; border-color:#30363D;">
+        <p style="margin:0; font-size:14px;"><b>Nom :</b> FODIL Mohammed El Amine</p>
+        <p style="margin:0; font-size:14px;"><b>Grade :</b> Master 1 GM</p>
+        <p style="margin:0; font-size:14px;"><b>Université :</b> Univ. de Maghnia</p>
+        <hr style="margin:10px 0; border-color:#30363D;">
+        <p style="margin:0; font-size:12px; color:#58A6FF !important;">📧 fodilmedam@gmail.com</p>
+        <p style="margin:0; font-size:12px; color:#58A6FF !important;">📞 0550139987</p>
+    </div>
+    """, unsafe_allow_html=True)
+    st.write("")
+
+# --- 4. DÉFINITION ET NAVIGATION ---
+pages_config = {
+    "📚 Cours Compresseur Axial": [
         st.Page("pages/1_Introduction.py", title="Introduction", icon="📖"),
         st.Page("pages/2_Thermodynamique.py", title="Thermodynamique", icon="🔥")
     ],
@@ -79,36 +104,13 @@ pages_dict = {
     ]
 }
 
-pg = st.navigation(pages_dict)
+pg = st.navigation(pages_config)
 
-# --- 4. BARRE LATÉRALE (SIDEBAR) ---
-with st.sidebar:
-    st.markdown("<h2 style='text-align: center;'>🌀 AxialFlow</h2>", unsafe_allow_html=True)
-    st.markdown("---")
-    
-    # Bloc Auteur
-    st.markdown(f"""
-    <div style="background-color: #0D1117; padding: 15px; border-radius: 10px; border: 1px solid #30363D;">
-        <p style="margin:0; color:#58A6FF; font-weight:bold; font-size:14px;">🎓 LOGICIEL ACADÉMIQUE</p>
-        <p style="margin:5px 0 0 0; font-size:15px; color:white;"><b>FODIL M. E. A.</b></p>
-        <p style="margin:0; font-size:13px; color:#8B949E;">Master 1 Génie Mécanique</p>
-        <p style="margin:0; font-size:13px; color:#8B949E;">Univ. de Maghnia</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.write("")
-    st.info("**Module :** Turbomachines II\n\n**Focus :** Compresseurs Axiaux")
-
-# --- 5. LOGIQUE D'AFFICHAGE DU DASHBOARD ---
-# Si aucune page spécifique n'est encore sélectionnée ou si on est à la racine
-# Streamlit switch_page peut être utilisé pour forcer l'accueil si besoin.
-
-# Rendu de la page sélectionnée
-pg.run()
-
-# --- 6. FOOTER ---
-st.markdown(f"""
+# --- 5. FOOTER ---
+st.markdown("""
     <div class="footer">
-        © 2026 - AxialFlow | <b>Développé par Dr. FODIL</b> | Master 1 Génie Mécanique - Centre Universitaire de Maghnia
+        © 2026 - AxialFlow | <b>Dr FODIL</b> | Master 1 Génie Mécanique - Centre Universitaire de Maghnia
     </div>
 """, unsafe_allow_html=True)
+
+pg.run()
