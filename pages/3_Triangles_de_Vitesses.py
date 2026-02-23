@@ -76,16 +76,55 @@ haller = V2 / V1
 solidite = 1.5
 df_lieblein = (1 - V2/V1) + (abs(Vw1 - Vw2) / (2 * solidite * V1))
 
+# --- STYLE CSS SPÉCIFIQUE POUR LES METRICS (À mettre en haut de la page) ---
+st.markdown("""
+    <style>
+    /* Conteneur principal de la métrique */
+    div[data-testid="stMetric"] {
+        background-color: #161B22 !important;
+        border: 1px solid #30363D !important;
+        border-top: 3px solid #58A6FF !important; /* Ligne bleue supérieure pour le style */
+        padding: 15px 10px !important;
+        border-radius: 10px !important;
+        transition: transform 0.2s;
+    }
+    
+    div[data-testid="stMetric"]:hover {
+        transform: scale(1.02);
+        border-color: #58A6FF !important;
+    }
+
+    /* Libellé (Le titre en petit) */
+    div[data-testid="stMetricLabel"] > div {
+        color: #8B949E !important; /* Gris clair pour le titre */
+        font-size: 14px !important;
+        font-weight: bold !important;
+        text-transform: uppercase;
+    }
+
+    /* Valeur (Le chiffre en gros) */
+    div[data-testid="stMetricValue"] > div {
+        color: #FFFFFF !important; /* BLANC PUR pour la valeur */
+        font-size: 24px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # --- AFFICHAGE : TABLEAU DE BORD (DASHBOARD) ---
 st.subheader("📊 Performances Globales de l'Étage")
-c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("Travail Euler", f"{W_euler/1000:.2f} kJ/kg")
-c2.metric("Rapport Pression π", f"{Pi_stage:.3f}")
-c3.metric("Température T02", f"{T02:.1f} K")
-c4.metric("Coeff. de Charge ψ", f"{psi:.2f}")
-c5.metric("Coeff. de Débit φ", f"{phi:.2f}")
 
-st.write("---")
+# Utilisation de containers pour isoler les colonnes
+with st.container():
+    c1, c2, c3, c4, c5 = st.columns(5)
+    
+    # On peut ajouter un petit indicateur de tendance (delta) si vous voulez
+    c1.metric("Travail Euler", f"{W_euler/1000:.2f} kJ/kg")
+    c2.metric("Rapport Pression π", f"{Pi_stage:.3f}")
+    c3.metric("Température T02", f"{T02:.1f} K")
+    c4.metric("Coeff. de Charge ψ", f"{psi:.2f}")
+    c5.metric("Coeff. de Débit φ", f"{phi:.2f}")
+
+st.markdown("---")
 
 import streamlit as st
 import numpy as np
@@ -265,3 +304,4 @@ with t3:
 
 st.markdown("---")
 st.caption("🚀 Développé par Dr FODIL - M1 GM | Module : Turbomachines Avancées")
+
